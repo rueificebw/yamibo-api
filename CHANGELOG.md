@@ -462,3 +462,23 @@ suspend fun fetchSignAction(actionUrl: String, cookie: String? = null): YamiboRe
 `cookie` is an optional raw Cookie header override. Pass the merged login cookie string including
 `cf_clearance` when Cloudflare has been cleared by a WebView. If omitted, the previously configured
 `YamiboClient.setCookie(...)` value is used.
+
+# v1.1.8
+
+Update HomePage DTO parsing :
+```kotlin notebook
+data class HomePage(
+    val swiperImages: List<SwiperImages>,
+    ...
+    val hasNewMessage: Boolean = false,
+)
+
+data class SwiperImages(
+    val imageUrl: String,
+    val tId: ThreadId? = null,
+)
+```
+Parse home page swiper images, including thread IDs when the banner links to a
+thread page.
+
+Parse `hasNewMessage` from the message footer entry when it contains `ico_msg`.

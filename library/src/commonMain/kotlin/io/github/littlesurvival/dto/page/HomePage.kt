@@ -1,6 +1,8 @@
 package io.github.littlesurvival.dto.page
 
 import io.github.littlesurvival.dto.model.ForumSummary
+import io.github.littlesurvival.dto.value.ThreadId
+import io.ktor.http.Url
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,6 +15,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class HomePage(
+    val swiperImages: List<SwiperImages>,
+
     /**
      * Ordered list of forum categories shown on the home page.
      *
@@ -26,7 +30,9 @@ data class HomePage(
      *
      * Shown during special periods like Lunar New Year.
      */
-    val yearlySummary: YearlySummary? = null
+    val yearlySummary: YearlySummary? = null,
+
+    val hasNewMessage: Boolean = false,
 )
 
 /** A yearly summary or event banner info. */
@@ -65,4 +71,10 @@ data class ForumCategory(
      * The order of this list matches the order displayed on the page.
      */
     val forums: List<ForumSummary>
+)
+
+@Serializable
+data class SwiperImages(
+    val imageUrl: String,
+    val tId: ThreadId? = null,
 )

@@ -3,10 +3,14 @@ package io.github.littlesurvival.parse
 import io.github.littlesurvival.core.ParseResult
 import io.github.littlesurvival.dto.page.HomePage
 import io.github.littlesurvival.dto.value.ForumId
+import io.github.littlesurvival.dto.value.ThreadId
+import java.nio.charset.StandardCharsets
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
 
@@ -14,7 +18,7 @@ class HomePageParserTest {
 
     private fun loadAsset(name: String): String {
         return this::class.java.classLoader!!.getResourceAsStream("assets/$name")!!
-                .bufferedReader()
+                .bufferedReader(StandardCharsets.UTF_8)
                 .readText()
     }
 
@@ -35,6 +39,13 @@ class HomePageParserTest {
 
         // Should have 3 categories: 我收藏的版块, 庙堂, 江湖
         assertEquals(3, homePage.categories.size)
+        assertFalse(homePage.hasNewMessage)
+
+        assertEquals(3, homePage.swiperImages.size)
+        assertEquals(ThreadId(564689), homePage.swiperImages[0].tId)
+        assertTrue(homePage.swiperImages[0].imageUrl.contains("4b35369c0f3b89678e356353c55a19d5"))
+        assertNull(homePage.swiperImages[1].tId)
+        assertNull(homePage.swiperImages[2].tId)
 
         // Verify 我收藏的版块
         val fav = homePage.categories[0]
@@ -77,5 +88,21 @@ class HomePageParserTest {
         assertTrue(summary.name.contains("年度总结"))
         assertTrue(summary.imageLink.isNotEmpty())
         assertTrue(summary.activityLink.isNotEmpty())
+    }
+
+    @Test
+    fun parseHomePageWithNewMessage() = runBlocking {
+        val html = loadAsset("homepage/has_new_message.html")
+        val result = HomePageParser().parse(html)
+
+        val success = assertIs<ParseResult.Success<HomePage>>(result)
+        val homePage = success.value
+
+        assertTrue(homePage.hasNewMessage)
+        assertEquals(3, homePage.swiperImages.size)
+        assertEquals(ThreadId(570889), homePage.swiperImages[0].tId)
+        assertEquals(ThreadId(569253), homePage.swiperImages[1].tId)
+        assertEquals(ThreadId(568921), homePage.swiperImages[2].tId)
+        assertTrue(homePage.swiperImages[0].imageUrl.contains("17aae2b031d29eb15606efa9269bb441"))
     }
 }

@@ -6,6 +6,7 @@ import io.github.littlesurvival.core.ParseResult
 import io.github.littlesurvival.dto.model.ForumSummary
 import io.github.littlesurvival.dto.page.ForumCategory
 import io.github.littlesurvival.dto.page.HomePage
+import io.github.littlesurvival.dto.page.SwiperImages
 import io.github.littlesurvival.dto.page.YearlySummary
 import io.github.littlesurvival.parse.util.ParseUtils
 
@@ -17,6 +18,18 @@ class HomePageParser : Parser<HomePage> {
             if (ParseUtils.isMaintenance(doc)) return ParseResult.Maintenance
             if (ParseUtils.isNotLoggedIn(doc)) return ParseResult.NotLoggedIn
             if (ParseUtils.isNoPermission(doc)) return ParseResult.NoPermission(ParseUtils.parsePromptMessage(doc))
+            val swiperImages =
+                doc.select(".swiper-wrapper .swiper-slide").mapNotNull { slide ->
+                    val imageUrl = slide.selectFirst("img[src]")?.attr("src")?.trim().orEmpty()
+                    if (imageUrl.isEmpty()) return@mapNotNull null
+
+                    val url = slide.selectFirst("a[href]")?.attr("href").orEmpty()
+                    SwiperImages(imageUrl = imageUrl, tId = ParseUtils.extractTid(url))
+                }
+            val hasNewMessage =
+                doc.select("a[href]").any { link ->
+                    link.attr("href").contains("do=pm") && link.selectFirst(".ico_msg") != null
+                }
             val categories = mutableListOf<ForumCategory>()
 
             val categoryHeaders = doc.select(".forumlist .subforumshow")
@@ -68,7 +81,14 @@ class HomePageParser : Parser<HomePage> {
                     )
                 }
 
-            ParseResult.Success(HomePage(categories = categories, yearlySummary = yearlySummary))
+            ParseResult.Success(
+                HomePage(
+                    swiperImages = swiperImages,
+                    categories = categories,
+                    yearlySummary = yearlySummary,
+                    hasNewMessage = hasNewMessage
+                )
+            )
         } catch (e: Exception) {
             ParseResult.Failure("Failed to parse home page", e)
         }
