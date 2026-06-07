@@ -24,6 +24,7 @@ import kotlinx.serialization.Serializable
  * @property birthplace Birthplace(出生地, e.g. "中国 广东省"), null if not set.
  * @property interests Interests / hobbies(興趣愛好), null if not set.
  * @property education Education(學歷, e.g. "本科"), null if not set.
+ * @property lastRecord LastRecord(最新機路, e.g. "有没有谁懂，怎么给小米浏览器的工具栏设置成分段打开") null if not set.
  * @property graduateSchool Graduate school(畢業學校), null if not set.
  * @property customTitle Custom title(自定義頭銜), null if not set.
  * @property homepage Personal homepage URL(個人主頁), null if not set.
@@ -50,6 +51,7 @@ data class ProfilePage(
     val birthplace: String? = null,
     val interests: String? = null,
     val education: String? = null,
+    val lastRecord: String? = null,
     val graduateSchool: String? = null,
     val customTitle: String? = null,
     val homepage: String? = null,

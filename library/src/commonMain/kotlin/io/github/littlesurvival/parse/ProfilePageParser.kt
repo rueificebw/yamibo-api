@@ -64,6 +64,7 @@ class ProfilePageParser : Parser<ProfilePage> {
             var birthplace: String? = null
             var interests: String? = null
             var education: String? = null
+            var lastRecord: String? = null
             var graduateSchool: String? = null
             var customTitle: String? = null
             var homepage: String? = null
@@ -99,6 +100,7 @@ class ProfilePageParser : Parser<ProfilePage> {
                     label.contains("出生地") -> birthplace = value.ifEmpty { null }
                     label.contains("兴趣爱好") || label.contains("興趣愛好") -> interests = value.ifEmpty { null }
                     label.contains("学历") || label.contains("學歷") -> education = value.ifEmpty { null }
+                    label.contains("最新记录") || label.contains("最新記錄") -> lastRecord = value.ifEmpty { null }
                     label.contains("毕业学校") || label.contains("畢業學校") -> graduateSchool = value.ifEmpty { null }
                     label.contains("自定义头衔") || label.contains("自定義頭銜") ->
                         customTitle = value.ifEmpty { null }
@@ -141,6 +143,7 @@ class ProfilePageParser : Parser<ProfilePage> {
                     birthplace = birthplace,
                     interests = interests,
                     education = education,
+                    lastRecord = lastRecord,
                     graduateSchool = graduateSchool,
                     customTitle = customTitle,
                     homepage = homepage,

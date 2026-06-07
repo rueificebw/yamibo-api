@@ -526,3 +526,15 @@ Add `YamiboRoute.UserSpace.AddFriend.AddFriendPost` and `AddFriendFactory` for s
 # v1.1.10
 
 Adjust error message of 503 status code from fetch result 
+
+# v1.1.11
+
+Add new lastRecord property in ProfilePage.
+```kotlin notebook
+@Serializable
+data class ProfilePage(
+    ....
+    val lastRecord? = null,
+    ...
+)
+```
