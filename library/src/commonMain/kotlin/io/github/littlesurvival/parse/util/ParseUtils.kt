@@ -167,12 +167,15 @@ object ParseUtils {
     }
 
     internal fun parsePromptMessage(doc: Document): String {
+        return parsePromptMessageOrNull(doc) ?: "未知權限錯誤"
+    }
+
+    internal fun parsePromptMessageOrNull(doc: Document): String? {
         return doc.select(".jump_c p")
             .firstOrNull()
             ?.text()
             ?.trim()
             ?.ifEmpty { null }
-            ?: "未知權限錯誤"
     }
 
     /**

@@ -542,3 +542,9 @@ data class ProfilePage(
 # v1.1.12
 
 Add YamiboLevels object as level util in YamiboConstant
+
+# v1.1.13
+
+Fix ThreadPage parser prompt handling :
+- Return `ParseResult.Failure` when a view-thread response is actually a Discuz prompt page without post nodes.
+- Deleted-thread responses such as `本帖已经删除，错误权限代码50` are no longer parsed as a successful empty thread page.

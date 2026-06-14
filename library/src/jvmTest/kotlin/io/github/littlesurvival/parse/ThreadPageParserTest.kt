@@ -15,12 +15,13 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
 import toKotlinCode
 import java.io.File
+import java.nio.charset.StandardCharsets
 
 class ThreadPageParserTest {
 
     private fun loadAsset(name: String): String {
         return this::class.java.classLoader!!.getResourceAsStream("assets/$name")!!
-                .bufferedReader()
+                .bufferedReader(StandardCharsets.UTF_8)
                 .readText()
     }
 
@@ -80,6 +81,15 @@ class ThreadPageParserTest {
         val thirdPost = page.posts[2]
         assertEquals(PostId(41458185), thirdPost.pid)
         assertEquals(3, thirdPost.floor)
+    }
+
+    @Test
+    fun parseDeletedThreadPromptAsFailure() = runBlocking {
+        val html = loadAsset("thread_deleted_prompt.html")
+        val result = ThreadPageParser().parse(html)
+
+        val failure = assertIs<ParseResult.Failure>(result)
+        assertEquals("本帖已经删除，错误权限代码50", failure.reason)
     }
 
     @Test

@@ -24,6 +24,9 @@ class ThreadPageParser : Parser<ThreadPage> {
             if (ParseUtils.isMaintenance(doc)) return ParseResult.Maintenance
             if (ParseUtils.isNotLoggedIn(doc)) return ParseResult.NotLoggedIn
             if (ParseUtils.isNoPermission(doc)) return ParseResult.NoPermission(ParseUtils.parsePromptMessage(doc))
+            ParseUtils.parsePromptMessageOrNull(doc)?.let { prompt ->
+                if (doc.select(".plc").isEmpty()) return ParseResult.Failure(prompt)
+            }
 
             // Thread info
             val viewTit = doc.selectFirst(".view_tit")
